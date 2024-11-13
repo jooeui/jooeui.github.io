@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        .timer-container {
+            text-align: center;
+        }
+
+        .timer-text {
+            font-size: 60pt;
+            text-shadow: 0 0 10px #4fa9ff,
+                         0 0 20px #4fa9ff,
+                         0 0 30px #4fa9ff;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        .urgent {
+            animation: urgentGlow 1s ease-in-out infinite alternate,
+                       heartbeat 1s ease-in-out infinite;
+        }
+
+        .celebration {
+            animation: celebrationGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #4fa9ff,
+                            0 0 20px #4fa9ff,
+                            0 0 30px #4fa9ff;
+            }
+            to {
+                text-shadow: 0 0 20px #4fa9ff,
+                            0 0 30px #4fa9ff,
+                            0 0 40px #4fa9ff;
+            }
+        }
+
+        @keyframes urgentGlow {
+            from {
+                text-shadow: 0 0 10px #ff4f4f,
+                            0 0 20px #ff4f4f,
+                            0 0 30px #ff4f4f;
+            }
+            to {
+                text-shadow: 0 0 20px #ff4f4f,
+                            0 0 30px #ff4f4f,
+                            0 0 40px #ff4f4f;
+            }
+        }
+
+        @keyframes celebrationGlow {
+            from {
+                text-shadow: 0 0 10px #ffd700,
+                            0 0 20px #ffd700,
+                            0 0 30px #ffd700;
+            }
+            to {
+                text-shadow: 0 0 20px #ffd700,
+                            0 0 30px #ffd700,
+                            0 0 40px #ffd700;
+            }
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.1); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.1); }
+            70% { transform: scale(1); }
+        }
+    </style>
+    <script>
+        
+        function updateTimer() {
+            // 현재 시간
+            const now = new Date();
+            // 출근 시간
+            const start = new Date().setHours(9, 0, 0);
+            // 퇴근 시간
+            const end = new Date().setHours(18, 0, 0);
+
+            
+            if ([5, 6].includes(now.getDay())) {
+                // 주말(토, 일)인 경우
+                document.getElementById('message').textContent = "즐거운 주말되세요!";
+                document.getElementById('timer').textContent = "00:00:00";
+                document.getElementById('message').className = "timer-text celebration";
+                document.getElementById('timer').className = "timer-text celebration";
+            } else {
+                // 평일
+                if (now >= end) {
+                    // 퇴근 시간 이후
+                    if (now.getDay() == 4) {
+                        // 금요일
+                        document.getElementById('message').textContent = "이번주도 고생하셨어요. 즐거운 주말되세요!";
+                    } else {
+                        // 월 ~ 목요일
+                        document.getElementById('message').textContent = "축하합니다! 퇴근하세요";
+                    }
+                    document.getElementById('timer').textContent = "00:00:00";
+                    document.getElementById('message').className = "timer-text celebration";
+                    document.getElementById('timer').className = "timer-text celebration";
+                } else if (now < start) {
+                    // 출근 시간 이전
+                    const diff = start - now;
+                    const hours = Math.floor(diff / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                    document.getElementById('message').textContent = "출근까지";
+                    document.getElementById('timer').textContent = 
+                        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                } else {
+                    const diff = end - now;
+                    const hours = Math.floor(diff / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                    
+                    // 근무 시간
+                    document.getElementById('message').textContent = "퇴근까지";
+                    document.getElementById('timer').textContent = 
+                        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                    // 남은 시간이 10분 이하일 때
+                    if (hours === 0 && minutes <= 10) {
+                        document.getElementById('message').className = "timer-text urgent";
+                        document.getElementById('timer').className = "timer-text urgent";
+                    } else {
+                        document.getElementById('message').className = "timer-text";
+                        document.getElementById('timer').className = "timer-text";
+                    }
+                }
+            }
+        }
+
+        setInterval(updateTimer, 1000);
+        updateTimer();
+    </script>
+</head>
+<body>
+    <div class="timer-container">
+        <div id="message" class="timer-text">퇴근까지</div>
+        <div id="timer" class="timer-text">00:00:00</div>
+    </div>
+</body>
+</html>
