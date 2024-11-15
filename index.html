@@ -94,7 +94,7 @@
             const end = new Date().setHours(18, 0, 0);
 
             
-            if ([5, 6].includes(now.getDay())) {
+            if ([0, 6].includes(now.getDay())) {
                 // 주말(토, 일)인 경우
                 document.getElementById('message').textContent = "즐거운 주말되세요!";
                 document.getElementById('timer').textContent = "00:00:00";
@@ -104,7 +104,7 @@
                 // 평일
                 if (now >= end) {
                     // 퇴근 시간 이후
-                    if (now.getDay() == 4) {
+                    if (now.getDay() == 5) {
                         // 금요일
                         document.getElementById('message').textContent = "이번주도 고생하셨어요. 즐거운 주말되세요!";
                     } else {
@@ -136,7 +136,7 @@
                         `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
                     // 남은 시간이 10분 이하일 때
-                    if (hours === 0 && minutes <= 10) {
+                    if (hours === 0 && minutes < 10) {
                         document.getElementById('message').className = "timer-text urgent";
                         document.getElementById('timer').className = "timer-text urgent";
                     } else {
